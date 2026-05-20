@@ -45,6 +45,8 @@ export function Gameboard() {
     return arr;
   })();
 
+  const placedShips = [];
+
   const getBoard = () => {
     return board;
   };
@@ -54,10 +56,19 @@ export function Gameboard() {
     const x = coords[0];
     const y = coords[1];
 
-    const ship = Ship(shipLength);
-
     const tailPosition = shipLength + (placeOnXAxis ? x : y) - 1;
     if (tailPosition >= 10) throw new Error("Illegal placement");
+
+    if (
+      coordsAreOccupied(
+        [x, y],
+        placeOnXAxis ? [tailPosition, y] : [x, tailPosition],
+      )
+    )
+      throw new Error("Already occupied.");
+
+    const ship = Ship(shipLength);
+    placedShips.push(ship);
 
     if (placeOnXAxis) {
       for (let i = x; i <= tailPosition; i++) {
@@ -78,6 +89,16 @@ export function Gameboard() {
       coords[1] >= 0 &&
       coords[1] < 10
     );
+  }
+
+  function coordsAreOccupied(startCoords, endCoords) {
+    for (let x = startCoords[0]; x <= endCoords[0]; x++) {
+      for (let y = startCoords[1]; y <= endCoords[1]; y++) {
+        const currentCell = board[x][y];
+        if (currentCell.ship) return true;
+      }
+    }
+    return false;
   }
 
   return {

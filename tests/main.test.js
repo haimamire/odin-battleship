@@ -80,24 +80,21 @@ describe("Gameboard", () => {
 
     // x axis
     expect(() => {
-      board.placeShip(5, [6, 9], true);
+      board.placeShip(5, [6, 0], true);
     }).toThrow();
     expect(() => {
-      board.placeShip(5, [5, 9], true);
+      board.placeShip(5, [5, 1], true);
     }).not.toThrow();
     expect(() => {
-      board.placeShip(5, [0, 9], true);
+      board.placeShip(5, [0, 1], true);
     }).not.toThrow();
 
     // y axis
     expect(() => {
-      board.placeShip(5, [9, 6], false);
+      board.placeShip(5, [0, 6], false);
     }).toThrow();
     expect(() => {
-      board.placeShip(5, [9, 5], false);
-    }).not.toThrow();
-    expect(() => {
-      board.placeShip(5, [9, 0], false);
+      board.placeShip(5, [1, 5], false);
     }).not.toThrow();
   });
 
@@ -125,5 +122,20 @@ describe("Gameboard", () => {
     expect(board.getBoard()[1][0].ship).toBeNull();
 
     expect(board.getBoard()[0][0].ship.getLength()).toBe(5);
+  });
+
+  test("throws an error if the coordinates are occupied", () => {
+    const board = Gameboard();
+    board.placeShip(5, [0, 0], true);
+
+    expect(() => {
+      board.placeShip(5, [3, 0], false);
+    }).toThrow();
+    expect(() => {
+      board.placeShip(5, [4, 0], true);
+    }).toThrow();
+    expect(() => {
+      board.placeShip(5, [5, 0], false);
+    }).not.toThrow();
   });
 });
