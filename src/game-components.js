@@ -7,13 +7,14 @@ export function Ship(shipLength) {
   let hasSunk = false;
 
   const hit = () => {
-    if (!hasSunk) timesHit++;
-  };
-
-  function isSunk() {
+    if (hasSunk) return;
+    timesHit++;
     if (timesHit >= length) {
       hasSunk = true;
     }
+  };
+
+  function isSunk() {
     return hasSunk;
   }
 
@@ -21,8 +22,13 @@ export function Ship(shipLength) {
     return length;
   };
 
+  const getTimesHit = () => {
+    return timesHit;
+  };
+
   return {
     getLength,
+    getTimesHit,
     hit,
     isSunk,
   };
@@ -81,6 +87,17 @@ export function Gameboard() {
     }
   }
 
+  function receiveAttack(coords) {
+    if (!areCoordsValid(coords)) throw new Error("Invalid coordinates.");
+    const x = coords[0];
+    const y = coords[1];
+    const targetCell = board[x][y];
+
+    if (targetCell.hit === true) throw new Error(`Already shot at ${x}, ${y}`);
+    targetCell.hit = true;
+    if (targetCell.ship) targetCell.ship.hit();
+  }
+
   function areCoordsValid(coords) {
     return (
       coords.length === 2 &&
@@ -104,5 +121,6 @@ export function Gameboard() {
   return {
     getBoard,
     placeShip,
+    receiveAttack,
   };
 }

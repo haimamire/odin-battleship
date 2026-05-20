@@ -138,4 +138,27 @@ describe("Gameboard", () => {
       board.placeShip(5, [5, 0], false);
     }).not.toThrow();
   });
+
+  test("throws an error if the same cell is attacked twice", () => {
+    const board = Gameboard();
+    board.receiveAttack([0, 0]);
+    expect(() => {
+      board.receiveAttack([0, 0]);
+    }).toThrow();
+  });
+
+  test("hits the ship", () => {
+    const board = Gameboard();
+    board.placeShip(3, [5, 5], true);
+
+    board.receiveAttack([5, 5]);
+    expect(board.getBoard()[5][5].ship.getTimesHit()).toBe(1);
+
+    board.receiveAttack([6, 5]);
+    board.receiveAttack([7, 5]);
+    expect(board.getBoard()[5][5].ship.getTimesHit()).toBe(3);
+    expect(board.getBoard()[5][5].ship.isSunk()).toBeTruthy();
+
+    expect(board.getBoard()[7][5].hit).toBeTruthy();
+  });
 });
