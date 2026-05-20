@@ -57,6 +57,10 @@ export function Gameboard() {
 
   const placedShips = [];
 
+  const getAllShips = () => {
+    return placedShips;
+  };
+
   function allShipsSunk() {
     for (let ship of placedShips) {
       if (!ship.isSunk()) return false;
@@ -66,32 +70,43 @@ export function Gameboard() {
 
   function placeShip(shipLength, coords, placeOnXAxis) {
     if (!areCoordsValid(coords)) throw new Error("Invalid coordinates.");
+
     const x = coords[0];
     const y = coords[1];
+    const tailX = placeOnXAxis ? shipLength + x - 1 : x;
+    const tailY = placeOnXAxis ? y : shipLength + y - 1;
 
-    const tailPosition = shipLength + (placeOnXAxis ? x : y) - 1;
-    if (tailPosition >= 10) throw new Error("Illegal placement");
-
-    if (
-      coordsAreOccupied(
-        [x, y],
-        placeOnXAxis ? [tailPosition, y] : [x, tailPosition],
-      )
-    )
-      throw new Error("Already occupied.");
+    if (!isPositionValid([x, y], [tailX, tailY])) return false;
 
     const ship = Ship(shipLength);
     placedShips.push(ship);
 
     if (placeOnXAxis) {
-      for (let i = x; i <= tailPosition; i++) {
+      for (let i = x; i <= tailX; i++) {
         board[i][y].ship = ship;
       }
     } else {
-      for (let i = y; i <= tailPosition; i++) {
+      for (let i = y; i <= tailY; i++) {
         board[x][i].ship = ship;
       }
     }
+    return true;
+  }
+
+  function isPositionValid(initialCoords, tailCoords) {
+    const x = initialCoords[0];
+    const y = initialCoords[1];
+    const tailX = tailCoords[0];
+    const tailY = tailCoords[1];
+
+    if (tailX >= 10 || tailY >= 10) return false;
+
+    for (let i = x; i <= tailX; i++) {
+      for (let j = y; j <= tailY; j++) {
+        if (board[i][j].ship) return false;
+      }
+    }
+    return true;
   }
 
   function receiveAttack(coords) {
@@ -115,20 +130,22 @@ export function Gameboard() {
     );
   }
 
-  function coordsAreOccupied(startCoords, endCoords) {
-    for (let x = startCoords[0]; x <= endCoords[0]; x++) {
-      for (let y = startCoords[1]; y <= endCoords[1]; y++) {
-        const currentCell = board[x][y];
-        if (currentCell.ship) return true;
+  function prettyPrint() {
+    for (let y = 0; y < 10; y++) {
+      const arr = [];
+      for (let x = 0; x < 10; x++) {
+        arr.push(board[x][y].ship ? 1 : 0);
       }
+      console.log(arr.join(" "));
     }
-    return false;
   }
 
   return {
     getBoard,
     placeShip,
     receiveAttack,
+    getAllShips,
     allShipsSunk,
+    prettyPrint,
   };
 }

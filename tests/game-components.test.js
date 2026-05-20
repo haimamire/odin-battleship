@@ -79,23 +79,13 @@ describe("Gameboard", () => {
     const board = Gameboard();
 
     // x axis
-    expect(() => {
-      board.placeShip(5, [6, 0], true);
-    }).toThrow();
-    expect(() => {
-      board.placeShip(5, [5, 1], true);
-    }).not.toThrow();
-    expect(() => {
-      board.placeShip(5, [0, 1], true);
-    }).not.toThrow();
+    expect(board.placeShip(5, [6, 0], true)).toBeFalsy();
+    expect(board.placeShip(5, [5, 1], true)).toBeTruthy();
+    expect(board.placeShip(5, [0, 1], true)).toBeTruthy();
 
     // y axis
-    expect(() => {
-      board.placeShip(5, [0, 6], false);
-    }).toThrow();
-    expect(() => {
-      board.placeShip(5, [1, 5], false);
-    }).not.toThrow();
+    expect(board.placeShip(5, [0, 6], false)).toBeFalsy();
+    expect(board.placeShip(5, [1, 5], false)).toBeTruthy();
   });
 
   test("places a ship in the correct coordinates (x axis)", () => {
@@ -128,15 +118,9 @@ describe("Gameboard", () => {
     const board = Gameboard();
     board.placeShip(5, [0, 0], true);
 
-    expect(() => {
-      board.placeShip(5, [3, 0], false);
-    }).toThrow();
-    expect(() => {
-      board.placeShip(5, [4, 0], true);
-    }).toThrow();
-    expect(() => {
-      board.placeShip(5, [5, 0], false);
-    }).not.toThrow();
+    expect(board.placeShip(5, [3, 0], false)).toBeFalsy();
+    expect(board.placeShip(5, [4, 0], true)).toBeFalsy();
+    expect(board.placeShip(5, [5, 0], false)).toBeTruthy();
   });
 
   test("throws an error if the same cell is attacked twice", () => {
