@@ -23,3 +23,29 @@ export function Ship(shipLength) {
     isSunk,
   };
 }
+
+export function Gameboard() {
+  const board = (() => {
+    const arr = [];
+    for (let i = 0; i < 10; i++) {
+      const row = [];
+      for (let j = 0; j < 10; j++) {
+        const cell = {
+          ship: null,
+          hit: false,
+        };
+        row.push(cell);
+      }
+      arr.push(row);
+    }
+    return arr;
+  })();
+
+  const getBoard = () => {
+    return board;
+  };
+
+  return {
+    getBoard,
+  };
+}
