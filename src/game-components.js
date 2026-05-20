@@ -51,11 +51,18 @@ export function Gameboard() {
     return arr;
   })();
 
-  const placedShips = [];
-
   const getBoard = () => {
     return board;
   };
+
+  const placedShips = [];
+
+  function allShipsSunk() {
+    for (let ship of placedShips) {
+      if (!ship.isSunk()) return false;
+    }
+    return true;
+  }
 
   function placeShip(shipLength, coords, placeOnXAxis) {
     if (!areCoordsValid(coords)) throw new Error("Invalid coordinates.");
@@ -122,5 +129,6 @@ export function Gameboard() {
     getBoard,
     placeShip,
     receiveAttack,
+    allShipsSunk,
   };
 }

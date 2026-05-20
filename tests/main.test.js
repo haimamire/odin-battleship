@@ -161,4 +161,19 @@ describe("Gameboard", () => {
 
     expect(board.getBoard()[7][5].hit).toBeTruthy();
   });
+
+  test("knows if all the ships have sunk", () => {
+    const board = Gameboard();
+    expect(board.allShipsSunk()).toBeTruthy();
+
+    board.placeShip(1, [5, 5], true);
+    board.placeShip(1, [0, 0], true);
+    expect(board.allShipsSunk()).toBeFalsy();
+
+    board.receiveAttack([5, 5]);
+    expect(board.allShipsSunk()).toBeFalsy();
+
+    board.receiveAttack([0, 0]);
+    expect(board.allShipsSunk()).toBeTruthy();
+  });
 });
