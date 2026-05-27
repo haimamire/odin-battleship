@@ -44,4 +44,27 @@ describe("computer behavior", () => {
     }
     expect(cellsOccupied).toBe(17);
   });
+
+  test("player receives an attack somewhere on the board", () => {
+    const player = Player("");
+    player.receiveRandomAttack();
+
+    const checkTimesHit = () => {
+      const board = player.board.getBoard();
+      let timesHit = 0;
+
+      for (let row of board) {
+        for (let cell of row) {
+          if (cell.hit) timesHit++;
+        }
+      }
+      return timesHit;
+    };
+    expect(checkTimesHit()).toBe(1);
+
+    player.receiveRandomAttack();
+    player.receiveRandomAttack();
+    player.receiveRandomAttack();
+    expect(checkTimesHit()).toBe(4);
+  });
 });

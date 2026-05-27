@@ -51,14 +51,15 @@ export function Gameboard() {
     return arr;
   })();
 
+  const placedShips = [];
+  const cellsHit = [];
+
   const getBoard = () => {
-    return board;
+    return [...board];
   };
 
-  const placedShips = [];
-
   const getAllShips = () => {
-    return placedShips;
+    return [...placedShips];
   };
 
   function allShipsSunk() {
@@ -116,8 +117,15 @@ export function Gameboard() {
     const targetCell = board[x][y];
 
     if (targetCell.hit === true) throw new Error(`Already shot at ${x}, ${y}`);
+
     targetCell.hit = true;
-    if (targetCell.ship) targetCell.ship.hit();
+    cellsHit.push([x, y]);
+
+    if (targetCell.ship) {
+      targetCell.ship.hit();
+      return true;
+    }
+    return false;
   }
 
   function areCoordsValid(coords) {
@@ -130,11 +138,23 @@ export function Gameboard() {
     );
   }
 
+  function areCoordsHit(coords) {
+    if (!Array.isArray(coords)) throw new TypeError("An array must be passed.");
+    if (cellsHit.length === 0) return false;
+
+    return cellsHit.some(
+      (element) => element[0] === coords[0] && element[1] === coords[1],
+    );
+  }
+
   function prettyPrint() {
     for (let y = 0; y < 10; y++) {
       const arr = [];
       for (let x = 0; x < 10; x++) {
-        arr.push(board[x][y].ship ? 1 : 0);
+        let symbol = 0;
+        if (board[x][y].ship) symbol = 1;
+        if (board[x][y].hit) symbol = "x";
+        arr.push(symbol);
       }
       console.log(arr.join(" "));
     }
@@ -142,10 +162,11 @@ export function Gameboard() {
 
   return {
     getBoard,
+    getAllShips,
     placeShip,
     receiveAttack,
-    getAllShips,
     allShipsSunk,
+    areCoordsHit,
     prettyPrint,
   };
 }

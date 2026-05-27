@@ -160,4 +160,12 @@ describe("Gameboard", () => {
     board.receiveAttack([0, 0]);
     expect(board.allShipsSunk()).toBeTruthy();
   });
+
+  test("checks if a pair of coordinates was already hit or not", () => {
+    const board = Gameboard();
+    expect(board.areCoordsHit([5, 5])).toBeFalsy();
+
+    board.receiveAttack([5, 5]);
+    expect(board.areCoordsHit([5, 5])).toBeTruthy();
+  })
 });
