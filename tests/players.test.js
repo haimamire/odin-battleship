@@ -47,7 +47,7 @@ describe("computer behavior", () => {
 
   test("player receives an attack somewhere on the board", () => {
     const player = Player("");
-    player.receiveRandomAttack();
+    player.receiveComputerAttack();
 
     const checkTimesHit = () => {
       const board = player.board.getBoard();
@@ -62,9 +62,57 @@ describe("computer behavior", () => {
     };
     expect(checkTimesHit()).toBe(1);
 
-    player.receiveRandomAttack();
-    player.receiveRandomAttack();
-    player.receiveRandomAttack();
+    player.receiveComputerAttack();
+    player.receiveComputerAttack();
+    player.receiveComputerAttack();
     expect(checkTimesHit()).toBe(4);
+  });
+
+  test("computer attacks adjacent spaces if a ship was hit", () => {
+    const player = Player("");
+
+    // Fills the board with ships, so that the random attack can be tested
+    for (let i = 0; i < 10; i++) {
+      for (let j = 0; j < 10; j++) {
+        player.board.placeShip(1, [i, j]);
+      }
+    }
+
+    // Initial attack
+    const [x, y] = player.receiveComputerAttack();
+
+    // Attacks on x axis
+    expect([
+      [x + 1, y],
+      [x - 1, y],
+    ]).toContainEqual(player.receiveComputerAttack());
+
+    expect([
+      [x + 2, y],
+      [x - 1, y],
+      [x - 2, y],
+    ]).toContainEqual(player.receiveComputerAttack());
+
+    expect([
+      [x, y + 1],
+      [x, y - 1],
+    ]).not.toContainEqual(player.receiveComputerAttack());
+
+    // Attacks the whole x axis
+    for (let i = 0; i < 6; i++) {
+      player.receiveComputerAttack();
+    }
+
+    // Attacks on y axis
+    expect([
+      [x, y - 1],
+      [x, y + 1],
+    ]).toContainEqual(player.receiveComputerAttack());
+
+    expect([
+      [x, y - 2],
+      [x, y + 1],
+      [x, y + 2],
+    ]).toContainEqual(player.receiveComputerAttack());
   });
 });

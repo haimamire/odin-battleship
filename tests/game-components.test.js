@@ -163,9 +163,9 @@ describe("Gameboard", () => {
 
   test("checks if a pair of coordinates was already hit or not", () => {
     const board = Gameboard();
-    expect(board.areCoordsHit([5, 5])).toBeFalsy();
+    expect(board.wereCoordsHit([5, 5])).toBeFalsy();
 
     board.receiveAttack([5, 5]);
-    expect(board.areCoordsHit([5, 5])).toBeTruthy();
-  })
+    expect(board.wereCoordsHit([5, 5])).toBeTruthy();
+  });
 });

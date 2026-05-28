@@ -7,13 +7,55 @@ export function Player(playerName) {
   const name = playerName;
   const board = Gameboard();
 
+  let nextComputerAttack = [];
+
+  function receiveComputerAttack() {
+    if (nextComputerAttack.length === 0) {
+      return receiveRandomAttack();
+    } else {
+      while (true) {
+        const coords = nextComputerAttack[0].shift();
+
+        if (!board.areCoordsValid(coords) || board.wereCoordsHit(coords)) {
+          nextComputerAttack.shift();
+          if (nextComputerAttack.length === 0) return receiveRandomAttack();
+          continue;
+        }
+        if (!board.foundShip(coords)) nextComputerAttack.shift();
+
+        board.receiveAttack(coords);
+        return coords;
+      }
+    }
+  }
+
   function receiveRandomAttack() {
     while (true) {
-      const randomCoords = getRandomCoords();
-      if (!board.areCoordsHit(randomCoords)) {
-        board.receiveAttack(randomCoords);
-        break;
+      const coords = getRandomCoords();
+      if (board.wereCoordsHit(coords)) continue;
+
+      board.receiveAttack(coords);
+
+      if (board.foundShip(coords)) {
+        const [x, y] = coords;
+        const rightArr = [],
+          leftArr = [],
+          topArr = [],
+          bottomArr = [];
+
+        for (let i = 1; i < 10; i++) {
+          const rightCoords = [x + i, y];
+          if (board.areCoordsValid(rightCoords)) rightArr.push(rightCoords);
+          const leftCoords = [x - i, y];
+          if (board.areCoordsValid(leftCoords)) leftArr.push(leftCoords);
+          const topCoords = [x, y - i];
+          if (board.areCoordsValid(topCoords)) topArr.push(topCoords);
+          const bottomCoords = [x, y + i];
+          if (board.areCoordsValid(bottomCoords)) bottomArr.push(bottomCoords);
+        }
+        nextComputerAttack.push(rightArr, leftArr, topArr, bottomArr);
       }
+      return coords;
     }
   }
 
@@ -24,7 +66,7 @@ export function Player(playerName) {
   return {
     name,
     board,
-    receiveRandomAttack,
+    receiveComputerAttack,
     getRandomCoords,
   };
 }
@@ -45,7 +87,6 @@ export function Computer() {
         }
       }
     }
-    console.log(`New ships placed at ${JSON.stringify(shipsCoords)}`);
     return shipsCoords;
   }
 
@@ -60,12 +101,10 @@ export function Computer() {
   };
 }
 
-const computer = Computer();
-computer.placeShips(5, 4, 3, 3, 2);
-computer.board.prettyPrint();
+// const computer = Computer();
+// computer.placeShips(5, 4, 3, 3, 2);
+// computer.board.prettyPrint();
 
-console.log("");
+// console.log("");
 
-const player = Player("");
-player.receiveRandomAttack();
-player.board.prettyPrint();
+// const player = Player("");

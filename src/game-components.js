@@ -72,8 +72,7 @@ export function Gameboard() {
   function placeShip(shipLength, coords, placeOnXAxis) {
     if (!areCoordsValid(coords)) throw new Error("Invalid coordinates.");
 
-    const x = coords[0];
-    const y = coords[1];
+    const [x, y] = coords;
     const tailX = placeOnXAxis ? shipLength + x - 1 : x;
     const tailY = placeOnXAxis ? y : shipLength + y - 1;
 
@@ -95,10 +94,8 @@ export function Gameboard() {
   }
 
   function isPositionValid(initialCoords, tailCoords) {
-    const x = initialCoords[0];
-    const y = initialCoords[1];
-    const tailX = tailCoords[0];
-    const tailY = tailCoords[1];
+    const [x, y] = initialCoords;
+    const [tailX, tailY] = tailCoords;
 
     if (tailX >= 10 || tailY >= 10) return false;
 
@@ -112,8 +109,7 @@ export function Gameboard() {
 
   function receiveAttack(coords) {
     if (!areCoordsValid(coords)) throw new Error("Invalid coordinates.");
-    const x = coords[0];
-    const y = coords[1];
+    const [x, y] = coords;
     const targetCell = board[x][y];
 
     if (targetCell.hit === true) throw new Error(`Already shot at ${x}, ${y}`);
@@ -129,6 +125,8 @@ export function Gameboard() {
   }
 
   function areCoordsValid(coords) {
+    if (!Array.isArray(coords)) return false;
+
     return (
       coords.length === 2 &&
       coords[0] >= 0 &&
@@ -138,13 +136,21 @@ export function Gameboard() {
     );
   }
 
-  function areCoordsHit(coords) {
+  function wereCoordsHit(coords) {
     if (!Array.isArray(coords)) throw new TypeError("An array must be passed.");
     if (cellsHit.length === 0) return false;
 
     return cellsHit.some(
       (element) => element[0] === coords[0] && element[1] === coords[1],
     );
+  }
+
+  function foundShip(coords) {
+    if (!Array.isArray(coords)) throw new TypeError("An array must be passed.");
+
+    const [x, y] = coords;
+
+    return board[x][y].ship ? true : false;
   }
 
   function prettyPrint() {
@@ -164,9 +170,11 @@ export function Gameboard() {
     getBoard,
     getAllShips,
     placeShip,
+    foundShip,
     receiveAttack,
     allShipsSunk,
-    areCoordsHit,
+    wereCoordsHit,
+    areCoordsValid,
     prettyPrint,
   };
 }
