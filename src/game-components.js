@@ -166,6 +166,25 @@ export function Gameboard() {
     }
   }
 
+  function getCells() {
+    const cells = [];
+    for (let x = 0; x < 10; x++) {
+      for (let y = 0; y < 10; y++) {
+        const element = document.createElement("div");
+        element.className = "cell";
+
+        if (board[x][y].ship) element.classList.add("ship");
+        if (board[x][y].hit) element.classList.add("hit");
+
+        cells.push({
+          element,
+          coords: [x, y],
+        });
+      }
+    }
+    return cells;
+  }
+
   return {
     getBoard,
     getAllShips,
@@ -176,5 +195,6 @@ export function Gameboard() {
     wereCoordsHit,
     areCoordsValid,
     prettyPrint,
+    getCells,
   };
 }

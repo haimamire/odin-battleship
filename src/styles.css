@@ -3,3 +3,31 @@
     system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif,
     "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 }
+
+.game-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.board {
+  display: grid;
+  grid-template: repeat(10, 50px) / repeat(10, 50px);
+  margin: 10px;
+}
+
+.board .cell {
+  border: 1px solid gray;
+}
+
+.board .cell.hit {
+  background-color: gray;
+}
+
+.board.player-board .cell.ship {
+  background-color: green;
+}
+
+.board .cell.ship.hit {
+  background-color: red;
+}
