@@ -3,14 +3,19 @@ import "./styles.css";
 import { Player, Computer } from "./players.js";
 
 function Game() {
-  const gameContainer = document.querySelector(".game-container");
   const playerContainer = document.querySelector(".player-board");
   const computerContainer = document.querySelector(".computer-board");
 
-  const player = Player("Player");
-  const computer = Computer();
+  let player;
+  let computer;
 
   function start() {
+    player = Player("Player");
+    computer = Computer();
+
+    playerContainer.textContent = "";
+    computerContainer.textContent = "";
+
     player.board.placeShip(5, [0, 0], true);
     player.board.placeShip(4, [0, 1], true);
     player.board.placeShip(3, [0, 2], true);
@@ -23,22 +28,22 @@ function Game() {
   }
 
   async function playGame() {
-    let playerBoard = player.board.getCells();
-    let computerBoard = computer.board.getCells();
+    let playerCells = player.board.getCells();
+    let computerCells = computer.board.getCells();
 
-    renderBoard(playerBoard, playerContainer);
-    renderBoard(computerBoard, computerContainer);
+    renderBoard(playerCells, playerContainer);
+    renderBoard(computerCells, computerContainer);
 
     while (true) {
       // Player's turn
       await new Promise((resolve) => {
-        computerBoard.forEach((cell) => {
+        computerCells.forEach((cell) => {
           cell.element.addEventListener("click", () => {
             try {
               computer.board.receiveAttack(cell.coords);
 
-              computerBoard = computer.board.getCells();
-              renderBoard(computerBoard, computerContainer);
+              computerCells = computer.board.getCells();
+              renderBoard(computerCells, computerContainer);
 
               resolve();
             } catch (e) {
@@ -47,24 +52,32 @@ function Game() {
           });
         });
       });
+      if (computer.board.allShipsSunk()) return handleWin(player);
 
       // Computer's turn
       await new Promise((resolve) => {
         setTimeout(() => {
           player.receiveComputerAttack();
 
-          playerBoard = player.board.getCells();
-          renderBoard(playerBoard, playerContainer);
+          playerCells = player.board.getCells();
+          renderBoard(playerCells, playerContainer);
 
           resolve();
         }, 1000);
       });
+
+      if (player.board.allShipsSunk()) return handleWin(computer);
     }
   }
 
-  function renderBoard(board, container) {
+  function handleWin(winner) {
+    alert(`${winner.name} has won.`);
+    start();
+  }
+
+  function renderBoard(cells, container) {
     container.textContent = "";
-    board.forEach((row) => container.appendChild(row.element));
+    cells.forEach((cell) => container.appendChild(cell.element));
   }
 
   return {

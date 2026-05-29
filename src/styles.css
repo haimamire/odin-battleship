@@ -12,8 +12,8 @@
 
 .board {
   display: grid;
-  grid-template: repeat(10, 50px) / repeat(10, 50px);
-  margin: 10px;
+  grid-template: repeat(10, 30px) / repeat(10, 30px);
+  margin: 30px;
 }
 
 .board .cell {
