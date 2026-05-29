@@ -166,26 +166,8 @@ export function Gameboard() {
     }
   }
 
-  function getCells(showShips = true) {
-    const cells = [];
-    for (let x = 0; x < 10; x++) {
-      for (let y = 0; y < 10; y++) {
-        const element = document.createElement("div");
-        element.className = "cell";
-
-        if (showShips && board[x][y].ship) element.classList.add("ship");
-        if (board[x][y].hit) {
-          if (board[x][y].ship) element.classList.add("ship");
-          element.classList.add("hit");
-        }
-
-        cells.push({
-          element,
-          coords: [x, y],
-        });
-      }
-    }
-    return cells;
+  function getRandomCoords() {
+    return [Math.floor(Math.random() * 10), Math.floor(Math.random() * 10)];
   }
 
   return {
@@ -198,6 +180,6 @@ export function Gameboard() {
     wereCoordsHit,
     areCoordsValid,
     prettyPrint,
-    getCells,
+    getRandomCoords,
   };
 }

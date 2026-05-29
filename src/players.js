@@ -1,11 +1,33 @@
 import { Gameboard } from "./game-components.js";
 
-export function Player(playerName) {
+export function Player(playerName, hidden = false) {
   if (typeof playerName !== "string")
     throw new TypeError("Player name must be a string.");
 
   const name = playerName;
   const board = Gameboard();
+
+  function getCells() {
+    const cells = [];
+    for (let y = 0; y < 10; y++) {
+      for (let x = 0; x < 10; x++) {
+        const element = document.createElement("div");
+        element.className = "cell";
+
+        if (!hidden && board.getBoard()[x][y].ship) element.classList.add("ship");
+        if (board.getBoard()[x][y].hit) {
+          if (board.getBoard()[x][y].ship) element.classList.add("ship");
+          element.classList.add("hit");
+        }
+
+        cells.push({
+          element,
+          coords: [x, y],
+        });
+      }
+    }
+    return cells;
+  }
 
   let nextComputerAttack = [];
 
@@ -31,7 +53,7 @@ export function Player(playerName) {
 
   function receiveRandomAttack() {
     while (true) {
-      const coords = getRandomCoords();
+      const coords = board.getRandomCoords();
       if (board.wereCoordsHit(coords)) continue;
 
       board.receiveAttack(coords);
@@ -59,26 +81,22 @@ export function Player(playerName) {
     }
   }
 
-  function getRandomCoords() {
-    return [Math.floor(Math.random() * 10), Math.floor(Math.random() * 10)];
-  }
-
   return {
     name,
     board,
+    getCells,
     receiveComputerAttack,
-    getRandomCoords,
   };
 }
 
 export function Computer() {
-  const { name, board, getRandomCoords } = Player("Computer");
+  const { name, board, getCells } = Player("Computer", true);
 
   function placeShips(...shipLengths) {
     const shipsCoords = [];
     for (let shipLength of shipLengths) {
       while (true) {
-        const randomCoords = getRandomCoords();
+        const randomCoords = board.getRandomCoords();
         const placeOnXAxis = getRandomBoolean();
 
         if (board.placeShip(shipLength, randomCoords, placeOnXAxis)) {
@@ -97,6 +115,7 @@ export function Computer() {
   return {
     name,
     board,
+    getCells,
     placeShips,
   };
 }

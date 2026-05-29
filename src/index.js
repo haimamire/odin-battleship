@@ -28,8 +28,8 @@ function Game() {
   }
 
   async function playGame() {
-    let playerCells = player.board.getCells();
-    let computerCells = computer.board.getCells(false);
+    let playerCells = player.getCells();
+    let computerCells = computer.getCells();
 
     renderBoard(playerCells, playerContainer);
     renderBoard(computerCells, computerContainer);
@@ -42,7 +42,7 @@ function Game() {
             try {
               computer.board.receiveAttack(cell.coords);
 
-              computerCells = computer.board.getCells(false);
+              computerCells = computer.getCells();
               renderBoard(computerCells, computerContainer);
 
               resolve();
@@ -59,7 +59,7 @@ function Game() {
         setTimeout(() => {
           player.receiveComputerAttack();
 
-          playerCells = player.board.getCells();
+          playerCells = player.getCells();
           renderBoard(playerCells, playerContainer);
 
           resolve();
