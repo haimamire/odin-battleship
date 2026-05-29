@@ -3,28 +3,57 @@ import "./styles.css";
 import { Player, Computer } from "./players.js";
 
 function Game() {
+  const body = document.querySelector("body");
+  const gameContainer = document.querySelector(".game-container");
   const playerContainer = document.querySelector(".player-board");
   const computerContainer = document.querySelector(".computer-board");
 
   let player;
   let computer;
 
-  function start() {
+  async function start() {
     player = Player("Player");
     computer = Computer();
 
     playerContainer.textContent = "";
     computerContainer.textContent = "";
 
-    player.board.placeShip(5, [0, 0], true);
-    player.board.placeShip(4, [0, 1], true);
-    player.board.placeShip(3, [0, 2], true);
-    player.board.placeShip(3, [0, 3], true);
-    player.board.placeShip(2, [0, 4], true);
+    // player.board.placeShip(5, [0, 0], true);
+    // player.board.placeShip(4, [0, 1], true);
+    // player.board.placeShip(3, [0, 2], true);
+    // player.board.placeShip(3, [5, 6], true);
+    // player.board.placeShip(2, [0, 4], true);
 
     computer.placeShips(5, 4, 3, 3, 2);
+    await dragNDropShips(5, 4, 3, 3, 2);
 
     playGame();
+  }
+
+  async function dragNDropShips(...ships) {
+    const newGameContainer = document.createElement("div");
+    newGameContainer.className = "ship-placement board";
+    body.insertBefore(newGameContainer, gameContainer);
+
+    while (true) {
+      if (ships.length === 0) {
+        newGameContainer.remove();
+        return;
+      }
+
+      const playerCells = player.getCells();
+      renderBoard(playerCells, newGameContainer);
+
+      await new Promise((resolve) => {
+        playerCells.forEach((cell) => {
+          cell.element.addEventListener("click", () => {
+            if (player.board.placeShip(ships[0], cell.coords, true))
+              ships.shift();
+            resolve();
+          });
+        });
+      });
+    }
   }
 
   async function playGame() {
