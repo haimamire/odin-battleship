@@ -166,15 +166,18 @@ export function Gameboard() {
     }
   }
 
-  function getCells() {
+  function getCells(showShips = true) {
     const cells = [];
     for (let x = 0; x < 10; x++) {
       for (let y = 0; y < 10; y++) {
         const element = document.createElement("div");
         element.className = "cell";
 
-        if (board[x][y].ship) element.classList.add("ship");
-        if (board[x][y].hit) element.classList.add("hit");
+        if (showShips && board[x][y].ship) element.classList.add("ship");
+        if (board[x][y].hit) {
+          if (board[x][y].ship) element.classList.add("ship");
+          element.classList.add("hit");
+        }
 
         cells.push({
           element,
