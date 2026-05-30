@@ -18,12 +18,6 @@ function Game() {
     playerContainer.textContent = "";
     computerContainer.textContent = "";
 
-    // player.board.placeShip(5, [0, 0], true);
-    // player.board.placeShip(4, [0, 1], true);
-    // player.board.placeShip(3, [0, 2], true);
-    // player.board.placeShip(3, [5, 6], true);
-    // player.board.placeShip(2, [0, 4], true);
-
     computer.placeShips(5, 4, 3, 3, 2);
     await dragNDropShips(5, 4, 3, 3, 2);
 
@@ -31,13 +25,24 @@ function Game() {
   }
 
   async function dragNDropShips(...ships) {
-    const newGameContainer = document.createElement("div");
-    newGameContainer.className = "ship-placement board";
+    const newGameContainer = Object.assign(document.createElement("div"), {
+      className: "ship-placement board right",
+    });
     body.insertBefore(newGameContainer, gameContainer);
+
+    let placeOnXAxis = true;
+    body.addEventListener("keydown", (e) => {
+      if (e.key === "q") {
+        placeOnXAxis = !placeOnXAxis;
+        newGameContainer.classList.remove(placeOnXAxis ? "down" : "right");
+        newGameContainer.classList.add(placeOnXAxis ? "right" : "down");
+      }
+    });
 
     while (true) {
       if (ships.length === 0) {
         newGameContainer.remove();
+        document.querySelector(".help").remove();
         return;
       }
 
@@ -46,8 +51,15 @@ function Game() {
 
       await new Promise((resolve) => {
         playerCells.forEach((cell) => {
+          cell.element.addEventListener("mouseover", () => {
+            cell.element.classList.add("hover");
+          });
+          cell.element.addEventListener("mouseout", () => {
+            cell.element.classList.remove("hover");
+          });
+
           cell.element.addEventListener("click", () => {
-            if (player.board.placeShip(ships[0], cell.coords, true))
+            if (player.board.placeShip(ships[0], cell.coords, placeOnXAxis))
               ships.shift();
             resolve();
           });

@@ -14,7 +14,8 @@ export function Player(playerName, hidden = false) {
         const element = document.createElement("div");
         element.className = "cell";
 
-        if (!hidden && board.getBoard()[x][y].ship) element.classList.add("ship");
+        if (!hidden && board.getBoard()[x][y].ship)
+          element.classList.add("ship");
         if (board.getBoard()[x][y].hit) {
           if (board.getBoard()[x][y].ship) element.classList.add("ship");
           element.classList.add("hit");
@@ -119,11 +120,3 @@ export function Computer() {
     placeShips,
   };
 }
-
-// const computer = Computer();
-// computer.placeShips(5, 4, 3, 3, 2);
-// computer.board.prettyPrint();
-
-// console.log("");
-
-// const player = Player("");

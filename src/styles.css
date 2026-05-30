@@ -2,12 +2,17 @@
   --system-ui:
     system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif,
     "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  --cell-size: 30px;
 }
 
 body {
+  margin-top: 40px;
+
   display: flex;
   flex-direction: column;
   align-items: center;
+
+  font-family: var(--system-ui);
 }
 
 .game-container {
@@ -18,12 +23,43 @@ body {
 
 .board {
   display: grid;
-  grid-template: repeat(10, 30px) / repeat(10, 30px);
+  grid-template: repeat(10, var(--cell-size)) / repeat(10, var(--cell-size));
   margin: 30px;
 }
 
 .board .cell {
   border: 1px solid gray;
+}
+
+.board .cell:hover {
+  background-color: rgb(240, 240, 240);
+  cursor: crosshair;
+}
+
+.board.ship-placement .hover {
+  background-color: rgb(188, 255, 188);
+}
+
+.board.ship-placement .hover::after {
+  display: flex;
+  position: relative;
+  justify-content: center;
+  align-items: center;
+  color: green;
+}
+
+.board.ship-placement.right .hover::after {
+  content: "🢂";
+  left: var(--cell-size);
+}
+
+.board.ship-placement.down .hover::after {
+  content: "🢃";
+  top: var(--cell-size);
+}
+
+.board.player-board .cell:hover {
+  cursor: not-allowed;
 }
 
 .board .cell.hit {
